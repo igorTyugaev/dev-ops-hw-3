@@ -1,0 +1,28 @@
+#!groovy
+
+pipeline {
+    agent {
+        label 'master'
+        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: '*.*'
+        }
+    }
+    stages {
+        stage("First step") {
+            steps {
+                sh 'ssh root@ub1 \'hostname\''
+            }
+        }
+        stage("Second step") {
+            steps {
+                sh 'ssh root@ub1 \'uptime\''
+            }
+        }
+    }
+}
